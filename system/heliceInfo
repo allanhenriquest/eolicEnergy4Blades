@@ -1,0 +1,47 @@
+heliceInfo
+{
+    type            heliceInfo;
+    libs            (forces);
+    writeControl    writeTime;
+
+    patches         ("helice.*");
+
+    // Setting reference back to wake average Uz velocity computed by [this]
+    // function object
+    URef            functionObjectValue;
+    functionObject  propellerInfo1;
+    functionObjectResult UzMean;
+
+    rho             rhoInf; // incompressible
+    rhoInf          1.2;
+
+    // Propeller data:
+    writePropellerPerformance yes;
+
+    // Radius (236mm = 0.236m)
+    radius          0.236;
+
+    rotationMode    specified;
+
+    // rotationMode = specified:
+    origin          (-2.427153e-06 0.01306565 5.377094e-06); // CM (x, y, z)
+    n               25.15;  // Velocidade de rotação
+    axis            (0 1 0); // Eixo de rotação
+
+    // Optionally write wake text files
+    // Note: controlled by writeControl
+    writeWakeFields yes;
+
+    // Sample plane (disk) properties
+    // Note: controlled by writeControl
+    sampleDisk
+    {
+        r1              0.05;
+        r2              0.2;
+        nTheta          36;
+        nRadial         10;
+        interpolationScheme cellPoint;
+        surfaceWriter   vtk;
+    }
+}
+

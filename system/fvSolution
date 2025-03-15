@@ -1,0 +1,86 @@
+/*--------------------------------*- C++ -*-*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2406                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    "pcorr.*"
+    {
+        solver          PBiCGStab;  // Solver ajustado para PBiCGStab
+        tolerance       1e-6;
+        relTol          0.1;
+        smoother        DICGaussSeidel;
+        maxIter         100;
+        preconditioner  DIC;  // Preconditioner definido
+    }
+
+    p
+    {
+        $pcorr;
+        solver          PBiCGStab;
+        tolerance       1e-6;
+        relTol          0.1;
+        preconditioner  DIC;  // Preconditioner para 'p'
+    }
+
+    pFinal
+    {
+        $p;
+        solver          PBiCGStab;
+        tolerance       1e-6;
+        relTol          0.1;
+        preconditioner  DIC;  // Preconditioner para 'pFinal'
+    }
+
+    "(U|k|epsilon)"
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-6;
+        relTol          0.1;
+    }
+
+    "(U|k|epsilon)Final"
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-6;
+        relTol          0.1;
+    }
+}
+
+PIMPLE
+{
+    correctPhi          yes;
+    nOuterCorrectors    3;
+    nCorrectors         2;
+    nNonOrthogonalCorrectors 3;
+}
+
+relaxationFactors
+{
+    "p"         0.3;
+    "U"         0.3;
+    "(k|epsilon).*"   0.3;
+}
+
+cache
+{
+    grad(U);
+}
+
+// ************************************************************************* //
+

@@ -1,1 +1,0 @@
-# eolicEnergy4Blades
